@@ -15,18 +15,26 @@
     --card: #FFFFFF;
     --text: #2D2D2D;
     --sub: #888;
+    --red: #EF476F;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  body { font-family: -apple-system, 'PingFang SC', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+  body { font-family: -apple-system, 'PingFang SC', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 40px; }
 
   /* ---- Header ---- */
-  .header { background: linear-gradient(135deg, #FF8C42, #FFD166); padding: 20px 16px 16px; text-align: center; }
-  .header .avatar { font-size: 48px; line-height: 1; }
-  .header .name { font-size: 20px; font-weight: 700; color: #fff; margin-top: 6px; text-shadow: 0 1px 4px rgba(0,0,0,.2); }
+  .header { background: linear-gradient(135deg, #FF8C42, #FFD166); padding: 24px 16px 20px; text-align: center; position: relative; }
+  .header .avatar-img { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 3px solid #fff; box-shadow: 0 3px 12px rgba(0,0,0,.2); }
+  .header .name { font-size: 20px; font-weight: 700; color: #fff; margin-top: 8px; text-shadow: 0 1px 4px rgba(0,0,0,.2); }
   .header .sub-title { font-size: 12px; color: rgba(255,255,255,.85); margin-top: 2px; }
+  .header .lock-btn { position: absolute; top: 16px; right: 16px; background: rgba(255,255,255,.25); border: none; color: #fff; border-radius: 20px; padding: 6px 14px; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 4px; backdrop-filter: blur(4px); }
+  .header .lock-btn.locked { background: rgba(239,71,111,.5); }
+
+  /* ---- Mode Banner ---- */
+  .mode-banner { text-align: center; padding: 8px 16px; font-size: 12px; font-weight: 600; }
+  .mode-banner.admin { background: var(--green); color: #fff; }
+  .mode-banner.guest { background: #f0f0f0; color: var(--sub); }
 
   /* ---- Score Board ---- */
-  .score-board { margin: -20px 16px 16px; background: var(--card); border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,.1); padding: 20px 16px 16px; }
+  .score-board { margin: 0 16px 16px; background: var(--card); border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,.1); padding: 20px 16px 16px; }
   .score-total { text-align: center; }
   .score-num { font-size: 64px; font-weight: 900; color: var(--orange); line-height: 1; }
   .score-label { font-size: 13px; color: var(--sub); margin-top: 4px; }
@@ -51,7 +59,8 @@
   /* ---- Check Card ---- */
   .check-group { margin-bottom: 10px; }
   .check-group-name { font-size: 12px; color: var(--sub); font-weight: 600; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; padding-left: 4px; }
-  .check-item { display: flex; align-items: center; background: var(--card); border-radius: 14px; padding: 12px 14px; margin-bottom: 8px; box-shadow: 0 2px 8px rgba(0,0,0,.05); transition: all .2s; border: 2px solid transparent; cursor: pointer; }
+  .check-item { display: flex; align-items: center; background: var(--card); border-radius: 14px; padding: 12px 14px; margin-bottom: 8px; box-shadow: 0 2px 8px rgba(0,0,0,.05); transition: all .2s; border: 2px solid transparent; }
+  .check-item.clickable { cursor: pointer; }
   .check-item.done { border-color: var(--green); background: #f0fff8; }
   .check-item.core { border-left: 4px solid var(--orange); }
   .check-item .check-icon { width: 28px; height: 28px; border-radius: 50%; border: 2.5px solid #ddd; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; transition: all .2s; }
@@ -61,13 +70,12 @@
   .check-item .check-desc { font-size: 12px; color: var(--sub); margin-top: 2px; line-height: 1.4; }
   .check-item .check-pts { font-size: 16px; font-weight: 700; color: var(--orange); flex-shrink: 0; }
   .check-item.done .check-pts { color: var(--green); }
-  .check-item.done .check-name { color: #333; text-decoration: line-through; opacity: .7; }
 
   /* ---- Submit button ---- */
   .submit-wrap { text-align: center; margin: 16px 0 8px; }
   .submit-btn { background: linear-gradient(135deg, var(--orange), var(--yellow)); color: #fff; border: none; border-radius: 50px; padding: 14px 48px; font-size: 17px; font-weight: 700; box-shadow: 0 4px 16px rgba(255,140,66,.4); cursor: pointer; transition: transform .1s; }
   .submit-btn:active { transform: scale(.96); }
-  .submit-btn:disabled { opacity: .6; cursor: default; }
+  .submit-btn:disabled { opacity: .4; cursor: not-allowed; background: #ccc; box-shadow: none; }
 
   /* ---- Today status ---- */
   .today-status { text-align: center; background: var(--card); border-radius: 14px; padding: 12px; margin: 8px 0; border: 2px solid var(--green); }
@@ -76,13 +84,17 @@
 
   /* ---- Shop ---- */
   .shop-cat { font-size: 13px; color: var(--sub); font-weight: 700; margin: 14px 0 6px; padding-left: 2px; letter-spacing: .5px; }
-  .shop-item { display: flex; align-items: center; background: var(--card); border-radius: 14px; padding: 12px 14px; margin-bottom: 8px; box-shadow: 0 2px 8px rgba(0,0,0,.05); }
+  .shop-item { display: flex; align-items: center; background: var(--card); border-radius: 14px; padding: 12px 14px; margin-bottom: 8px; box-shadow: 0 2px 8px rgba(0,0,0,.05); position: relative; }
   .shop-item .shop-emoji { font-size: 26px; flex-shrink: 0; }
   .shop-item .shop-body { flex: 1; margin-left: 12px; }
   .shop-item .shop-name { font-size: 14px; font-weight: 600; }
   .shop-item .shop-rule { font-size: 11px; color: var(--sub); margin-top: 3px; line-height: 1.4; }
   .shop-item .shop-pts { font-size: 18px; font-weight: 800; color: var(--purple); flex-shrink: 0; text-align: right; }
   .shop-item .shop-pts span { display: block; font-size: 10px; color: var(--sub); font-weight: 400; }
+  .shop-item .redeem-btn { display: none; background: var(--orange); color: #fff; border: none; border-radius: 20px; padding: 8px 18px; font-size: 13px; font-weight: 600; cursor: pointer; margin-left: 8px; flex-shrink: 0; }
+  .shop-item .redeem-btn:active { transform: scale(.95); }
+  .shop-item .redeem-btn.show { display: inline-block; }
+  .shop-item .redeem-btn.locked { background: #ccc; cursor: not-allowed; }
 
   /* ---- History toggle ---- */
   .history-btn { display: block; width: 100%; background: transparent; border: 2px solid var(--blue); color: var(--blue); border-radius: 50px; padding: 10px; font-size: 14px; font-weight: 600; cursor: pointer; text-align: center; margin-bottom: 8px; }
@@ -91,6 +103,7 @@
   .history-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 4px; border-bottom: 1px solid #f0f0f0; font-size: 13px; }
   .history-row .h-date { color: var(--sub); }
   .history-row .h-score { font-weight: 700; color: var(--orange); }
+  .history-row .h-action { color: var(--red); font-size: 11px; font-weight: 600; }
 
   /* ---- Toast ---- */
   .toast { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(.8); background: rgba(0,0,0,.8); color: #fff; border-radius: 16px; padding: 14px 24px; font-size: 16px; font-weight: 600; text-align: center; z-index: 999; opacity: 0; pointer-events: none; transition: all .3s; }
@@ -98,6 +111,7 @@
 
   /* ---- Reset ---- */
   .reset-area { text-align: center; margin: 8px 0 24px; }
+  .reset-area.hidden { display: none; }
   .reset-btn { background: transparent; border: 1px solid #ddd; color: #ccc; border-radius: 8px; padding: 6px 16px; font-size: 12px; cursor: pointer; }
 
   /* ---- Streak banner ---- */
@@ -105,16 +119,47 @@
   .streak-day { width: 30px; height: 30px; border-radius: 50%; background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 14px; }
   .streak-day.pass { background: var(--green); }
   .streak-day.today-dot { background: var(--orange); }
+
+  /* ---- Login Modal ---- */
+  .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,.5); z-index: 1000; display: flex; align-items: center; justify-content: center; }
+  .modal-overlay.hidden { display: none; }
+  .modal-box { background: #fff; border-radius: 24px; padding: 32px 28px; text-align: center; width: 280px; box-shadow: 0 8px 40px rgba(0,0,0,.2); }
+  .modal-box .modal-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 3px solid var(--orange); margin-bottom: 12px; }
+  .modal-box .modal-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .modal-box .modal-sub { font-size: 12px; color: var(--sub); margin-bottom: 18px; }
+  .modal-box .pin-input { display: flex; justify-content: center; gap: 8px; margin-bottom: 16px; }
+  .modal-box .pin-dot { width: 40px; height: 48px; border-radius: 10px; border: 2px solid #ddd; text-align: center; font-size: 22px; font-weight: 700; color: var(--text); -webkit-appearance: none; outline: none; caret-color: var(--orange); }
+  .modal-box .pin-dot:focus { border-color: var(--orange); }
+  .modal-box .modal-btn { background: linear-gradient(135deg, var(--orange), var(--yellow)); color: #fff; border: none; border-radius: 50px; padding: 12px 36px; font-size: 15px; font-weight: 700; cursor: pointer; width: 100%; }
+  .modal-box .modal-btn:active { transform: scale(.96); }
+  .modal-box .modal-err { color: var(--red); font-size: 12px; margin-top: 8px; min-height: 18px; }
+  .modal-box .modal-logout { background: none; border: none; color: var(--sub); font-size: 12px; margin-top: 12px; cursor: pointer; text-decoration: underline; }
+
+  /* ---- Redeem Confirm Modal ---- */
+  .redeem-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,.5); z-index: 1000; display: flex; align-items: center; justify-content: center; }
+  .redeem-modal.hidden { display: none; }
+  .redeem-box { background: #fff; border-radius: 24px; padding: 28px 24px; text-align: center; width: 290px; box-shadow: 0 8px 40px rgba(0,0,0,.2); }
+  .redeem-box .rm-icon { font-size: 48px; margin-bottom: 10px; }
+  .redeem-box .rm-title { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+  .redeem-box .rm-info { font-size: 13px; color: var(--sub); margin-bottom: 8px; }
+  .redeem-box .rm-pts { font-size: 24px; font-weight: 800; color: var(--purple); margin-bottom: 16px; }
+  .redeem-box .rm-row { display: flex; gap: 10px; }
+  .redeem-box .rm-cancel { flex: 1; background: #f0f0f0; border: none; border-radius: 50px; padding: 12px; font-size: 14px; font-weight: 600; color: var(--sub); cursor: pointer; }
+  .redeem-box .rm-confirm { flex: 1; background: var(--orange); border: none; border-radius: 50px; padding: 12px; font-size: 14px; font-weight: 700; color: #fff; cursor: pointer; }
 </style>
 </head>
 <body>
 
 <!-- Header -->
 <div class="header">
-  <div class="avatar">🦁</div>
+  <button class="lock-btn" id="lockBtn" onclick="toggleLock()">🔒 已上锁</button>
+  <img class="avatar-img" src="avatar.png" alt="范鑫澄" onerror="this.style.display='none'">
   <div class="name">范鑫澄 成长积分</div>
   <div class="sub-title">幼小衔接冲刺版 · 每天努力 积分兑好东西</div>
 </div>
+
+<!-- Mode Banner -->
+<div class="mode-banner guest" id="modeBanner">👀 访客模式 · 仅可查看，不能打卡或兑换</div>
 
 <!-- Score Board -->
 <div class="score-board">
@@ -122,7 +167,6 @@
     <div class="score-num" id="totalScore">0</div>
     <div class="score-label">累计总积分 ⭐</div>
   </div>
-  <!-- 近7天连续打卡 -->
   <div class="streak-bar" id="streakBar"></div>
   <hr class="score-divider">
   <div class="score-row">
@@ -159,7 +203,7 @@
     </div>
   </div>
   <div class="submit-wrap">
-    <button class="submit-btn" id="submitBtn" onclick="submitToday()">💾 提交今日打卡</button>
+    <button class="submit-btn" id="submitBtn" disabled onclick="submitToday()">🔒 请先解锁</button>
   </div>
 </div>
 
@@ -176,39 +220,129 @@
   <div id="shopList"></div>
 </div>
 
-<!-- Reset -->
-<div class="reset-area">
+<!-- Reset (admin only) -->
+<div class="reset-area hidden" id="resetArea">
   <button class="reset-btn" onclick="confirmReset()">清除全部数据</button>
 </div>
 
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
+<!-- Login Modal -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal-box">
+    <img class="modal-avatar" src="avatar.png" alt="范鑫澄" onerror="this.style.display='none'">
+    <div class="modal-title">家长解锁</div>
+    <div class="modal-sub">输入密码进入管理模式</div>
+    <input type="password" id="pinInput" class="pin-dot" style="width:100%;text-align:center" maxlength="6" placeholder="输入密码" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="modal-btn" onclick="doLogin()">🔓 解锁</button>
+    <div class="modal-err" id="loginErr"></div>
+    <button class="modal-logout" id="logoutBtn" style="display:none" onclick="doLogout()">退出管理模式</button>
+  </div>
+</div>
+
+<!-- Redeem Confirm Modal -->
+<div class="redeem-modal hidden" id="redeemModal">
+  <div class="redeem-box">
+    <div class="rm-icon" id="rmIcon"></div>
+    <div class="rm-title" id="rmTitle"></div>
+    <div class="rm-info" id="rmInfo"></div>
+    <div class="rm-pts" id="rmPts"></div>
+    <div class="rm-row">
+      <button class="rm-cancel" onclick="closeRedeem()">取消</button>
+      <button class="rm-confirm" id="rmConfirm" onclick="confirmRedeem()">确认兑换</button>
+    </div>
+  </div>
+</div>
+
 <script>
+// ========== 身份验证 ==========
+const ADMIN_PIN = '202106';  // 默认密码：孩子生日年月，上线后可改
+const KEY_AUTH = 'fxc_auth_v1';
+const KEY_REDEEM = 'fxc_redeems_v1';
+
+function isAdmin() { return sessionStorage.getItem(KEY_AUTH)==='admin'; }
+
+function updateModeUI() {
+  const admin = isAdmin();
+  const lockBtn = document.getElementById('lockBtn');
+  const modeBanner = document.getElementById('modeBanner');
+  const submitBtn = document.getElementById('submitBtn');
+  const resetArea = document.getElementById('resetArea');
+
+  if(admin) {
+    lockBtn.textContent = '🔓 已解锁';
+    lockBtn.className = 'lock-btn';
+    modeBanner.textContent = '🔓 管理模式 · 可以打卡与兑换积分';
+    modeBanner.className = 'mode-banner admin';
+    submitBtn.disabled = false;
+    submitBtn.textContent = '💾 提交今日打卡';
+    resetArea.classList.remove('hidden');
+  } else {
+    lockBtn.textContent = '🔒 已上锁';
+    lockBtn.className = 'lock-btn locked';
+    modeBanner.textContent = '👀 访客模式 · 仅可查看，不能打卡或兑换';
+    modeBanner.className = 'mode-banner guest';
+    submitBtn.disabled = true;
+    submitBtn.textContent = '🔒 请先解锁';
+    resetArea.classList.add('hidden');
+  }
+  renderCheckList();
+  renderShop();
+}
+
+function toggleLock() {
+  if(isAdmin()) {
+    doLogout();
+  } else {
+    document.getElementById('loginModal').classList.remove('hidden');
+    document.getElementById('pinInput').value = '';
+    document.getElementById('loginErr').textContent = '';
+    document.getElementById('logoutBtn').style.display = 'none';
+    setTimeout(()=>document.getElementById('pinInput').focus(), 200);
+  }
+}
+
+function doLogin() {
+  const pin = document.getElementById('pinInput').value;
+  if(pin === ADMIN_PIN) {
+    sessionStorage.setItem(KEY_AUTH, 'admin');
+    document.getElementById('loginModal').classList.add('hidden');
+    updateModeUI();
+    showToast('🔓 管理模式已开启');
+  } else {
+    document.getElementById('loginErr').textContent = '密码错误，请重试';
+    document.getElementById('pinInput').value = '';
+    document.getElementById('pinInput').focus();
+  }
+}
+
+function doLogout() {
+  sessionStorage.removeItem(KEY_AUTH);
+  document.getElementById('loginModal').classList.add('hidden');
+  updateModeUI();
+  showToast('🔒 已退出管理模式');
+}
+
 // ========== 打卡项目数据 ==========
 const TASKS = [
-  // 核心习惯 (各4分)
   { id:'no_hair', group:'⭐ 核心习惯（各4分，必打）', name:'不摸头发', desc:'全天未摸/卷头发，自觉提醒自己', pts:4, core:true },
   { id:'eat_well', group:'⭐ 核心习惯（各4分，必打）', name:'好好吃饭', desc:'不挑食不剩饭，20分钟内专心吃完', pts:4, core:true },
   { id:'focus', group:'⭐ 核心习惯（各4分，必打）', name:'专注练习', desc:'做作业/学习时不分心，保持19分钟以上', pts:4, core:true },
   { id:'pinyin', group:'⭐ 核心习惯（各4分，必打）', name:'拼音启蒙', desc:'每日跟读拼音，认读当日字母/音节，不应付', pts:4, core:true },
   { id:'self_care', group:'⭐ 核心习惯（各4分，必打）', name:'基本自理', desc:'自己穿脱衣裤、整理书包、收纳玩具，不依赖大人', pts:4, core:true },
-  // 健康体魄 (各2分)
   { id:'outdoor', group:'🏃 健康体魄（各2分）', name:'户外运动', desc:'每日户外活动≥30分钟（吊杆/跳绳/跑步/骑车等）', pts:2, core:false },
   { id:'sleep', group:'🏃 健康体魄（各2分）', name:'作息守时', desc:'晚9点30分前上床，不拖延', pts:2, core:false },
   { id:'shower', group:'🏃 健康体魄（各2分）', name:'洗澡洗漱', desc:'独立洗澡+刷牙洗脸，按时完成，无需催', pts:2, core:false },
   { id:'toilet', group:'🏃 健康体魄（各2分）', name:'独立如厕', desc:'自主如厕，自己擦干净、整理衣裤', pts:2, core:false },
   { id:'screen', group:'🏃 健康体魄（各2分）', name:'屏幕自律', desc:'晚8点30分后不看任何电子产品', pts:2, core:false },
-  // 品格社交 (各1分)
   { id:'emotion', group:'💛 品格社交（各1分）', name:'情绪管理', desc:'生气时不打人不大喊，用语言表达', pts:1, core:false },
   { id:'polite', group:'💛 品格社交（各1分）', name:'礼貌礼仪', desc:'主动问好，常说谢谢/对不起', pts:1, core:false },
-  // 学习启蒙 (各2分)
   { id:'math', group:'📚 学习启蒙（各2分）', name:'数学练习', desc:'完成当日数学练习，认真细心', pts:2, core:false },
   { id:'reading', group:'📚 学习启蒙（各2分）', name:'绘本阅读', desc:'语文或英语精读绘本≥1本或阅读打卡', pts:2, core:false },
-  // 安全 (1分)
   { id:'safety', group:'🛡️ 安全意识（1分）', name:'安全意识', desc:'出行佩戴头盔及电话手表，不跟陌生人走', pts:1, core:false },
 ];
-const MAX_SCORE = TASKS.reduce((s,t)=>s+t.pts, 0); // 36分
+const MAX_SCORE = TASKS.reduce((s,t)=>s+t.pts, 0);
 
 // ========== 积分超市数据 ==========
 const SHOP = [
@@ -235,13 +369,14 @@ const SHOP = [
 const KEY_RECORDS = 'fxc_records_v2';
 function loadRecords() { try { return JSON.parse(localStorage.getItem(KEY_RECORDS)||'{}'); } catch(e){ return {}; } }
 function saveRecords(r) { localStorage.setItem(KEY_RECORDS, JSON.stringify(r)); }
+function loadRedeems() { try { return JSON.parse(localStorage.getItem(KEY_REDEEM)||'[]'); } catch(e){ return []; } }
+function saveRedeems(r) { localStorage.setItem(KEY_REDEEM, JSON.stringify(r)); }
 
 function dateStr(d) {
   const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), dd=String(d.getDate()).padStart(2,'0');
   return `${y}-${m}-${dd}`;
 }
 function todayStr() { return dateStr(new Date()); }
-
 function weekStart(d) {
   const dt = new Date(d);
   const day = dt.getDay() || 7;
@@ -252,7 +387,8 @@ function monthStr(d) { return d.slice(0,7); }
 
 // ========== 状态 ==========
 let currentDate = todayStr();
-let checked = {}; // id->bool for current date editing
+let checked = {};
+let pendingRedeemIdx = -1;
 
 // ========== 渲染 ==========
 function renderAll() {
@@ -264,9 +400,12 @@ function renderAll() {
 
 function renderScoreBoard() {
   const records = loadRecords();
+  const redeems = loadRedeems();
   const all = Object.values(records);
-  const total = all.reduce((s,r)=>s+r.score,0);
-  document.getElementById('totalScore').textContent = total;
+  const earned = all.reduce((s,r)=>s+r.score,0);
+  const spent = redeems.reduce((s,r)=>s+r.pts,0);
+  const total = earned - spent;
+  document.getElementById('totalScore').textContent = Math.max(0, total);
 
   const today = new Date();
   const ws = weekStart(dateStr(today));
@@ -281,7 +420,6 @@ function renderScoreBoard() {
   document.getElementById('monthScore').textContent = month;
   document.getElementById('checkDays').textContent = days;
 
-  // Streak: 近7天
   const bar = document.getElementById('streakBar');
   bar.innerHTML = '';
   for(let i=6;i>=0;i--) {
@@ -313,7 +451,6 @@ function renderCheckList() {
   const dp = document.getElementById('datePicker');
   dp.value = currentDate;
 
-  // 分组
   const groups = {};
   for(const t of TASKS) {
     if(!groups[t.group]) groups[t.group]=[];
@@ -322,6 +459,8 @@ function renderCheckList() {
 
   const container = document.getElementById('checkList');
   container.innerHTML = '';
+
+  const admin = isAdmin();
 
   for(const [gname, items] of Object.entries(groups)) {
     const gDiv = document.createElement('div');
@@ -334,7 +473,7 @@ function renderCheckList() {
     for(const task of items) {
       const div = document.createElement('div');
       const isDone = submitted ? !!(rec.done||{})[task.id] : !!(checked[task.id]);
-      div.className = 'check-item' + (task.core?' core':'') + (isDone?' done':'');
+      div.className = 'check-item' + (task.core?' core':'') + (isDone?' done':'') + ((admin && !submitted)?' clickable':'');
       div.innerHTML = `
         <div class="check-icon">${isDone?'✓':''}</div>
         <div class="check-body">
@@ -343,7 +482,7 @@ function renderCheckList() {
         </div>
         <div class="check-pts">${task.pts}分</div>
       `;
-      if(!submitted) {
+      if(admin && !submitted) {
         div.onclick = () => { checked[task.id]=!checked[task.id]; renderCheckList(); };
       }
       gDiv.appendChild(div);
@@ -356,24 +495,42 @@ function renderCheckList() {
   if(submitted) {
     submitDiv.style.display = 'block';
     document.getElementById('submittedScore').textContent = rec.score + '/' + MAX_SCORE + ' 分';
-    submitBtn.textContent = '✏️ 修改今日打卡';
-    submitBtn.onclick = editToday;
+    if(admin) {
+      submitBtn.textContent = '✏️ 修改今日打卡';
+      submitBtn.disabled = false;
+      submitBtn.onclick = editToday;
+    } else {
+      submitBtn.textContent = '🔒 请先解锁';
+      submitBtn.disabled = true;
+    }
   } else {
     submitDiv.style.display = 'none';
-    submitBtn.textContent = '💾 提交今日打卡';
-    submitBtn.onclick = submitToday;
+    if(admin) {
+      submitBtn.textContent = '💾 提交今日打卡';
+      submitBtn.disabled = false;
+      submitBtn.onclick = submitToday;
+    } else {
+      submitBtn.textContent = '🔒 请先解锁';
+      submitBtn.disabled = true;
+    }
   }
 }
 
 function renderShop() {
   const records = loadRecords();
-  const total = Object.values(records).reduce((s,r)=>s+r.score,0);
+  const redeems = loadRedeems();
+  const earned = Object.values(records).reduce((s,r)=>s+r.score,0);
+  const spent = redeems.reduce((s,r)=>s+r.pts,0);
+  const total = Math.max(0, earned - spent);
 
   const container = document.getElementById('shopList');
-  container.innerHTML = `<div style="text-align:center;font-size:13px;color:var(--sub);margin-bottom:12px">当前余额 <b style="color:var(--purple);font-size:18px">${total}</b> 积分</div>`;
+  const admin = isAdmin();
+  container.innerHTML = `<div style="text-align:center;font-size:13px;color:var(--sub);margin-bottom:12px">当前余额 <b style="color:var(--purple);font-size:18px">${total}</b> 积分` +
+    (spent>0 ? `<span style="font-size:11px;color:var(--sub);margin-left:4px">(累计获得${earned}，已兑换${spent})</span>` : ``) +
+    `</div>`;
 
   let lastCat = '';
-  for(const item of SHOP) {
+  SHOP.forEach((item, idx) => {
     if(item.cat!==lastCat) {
       const cat = document.createElement('div');
       cat.className = 'shop-cat';
@@ -392,24 +549,71 @@ function renderShop() {
         <div class="shop-rule">${item.rule}</div>
       </div>
       <div class="shop-pts">${item.pts}<span>积分</span></div>
+      <button class="redeem-btn ${admin?'show':''} ${canBuy?'':'locked'}" 
+        ${(admin && canBuy) ? '' : 'disabled'}
+        onclick="event.stopPropagation(); openRedeem(${idx})">兑换</button>
     `;
     container.appendChild(div);
-  }
+  });
 }
 
 function renderHistory() {
   const records = loadRecords();
+  const redeems = loadRedeems();
   const sorted = Object.entries(records).sort((a,b)=>b[0].localeCompare(a[0])).slice(0,30);
   const container = document.getElementById('historyList');
   if(sorted.length===0) { container.innerHTML='<div style="text-align:center;color:#ccc;font-size:13px;padding:16px">暂无记录</div>'; return; }
   container.innerHTML = sorted.map(([k,v])=>{
     const pct = Math.round(v.score/MAX_SCORE*100);
-    const bar = '🌟'.repeat(Math.floor(pct/25));
-    return `<div class="history-row"><span class="h-date">${k}</span><span>${bar}</span><span class="h-score">${v.score}/${MAX_SCORE}</span></div>`;
+    const stars = '🌟'.repeat(Math.floor(pct/25));
+    // Check if any redeems on this date
+    const dayRedeems = redeems.filter(r=>r.date===k);
+    const rStr = dayRedeems.length>0 ? ` <span class="h-action">-${dayRedeems.reduce((s,r)=>s+r.pts,0)}</span>` : '';
+    return `<div class="history-row"><span class="h-date">${k}</span><span>${stars}</span><span class="h-score">${v.score}/${MAX_SCORE}${rStr}</span></div>`;
   }).join('');
 }
 
-// ========== 交互 ==========
+// ========== 兑换交互 ==========
+function openRedeem(idx) {
+  if(!isAdmin()) { showToast('🔒 请先解锁再兑换'); return; }
+  if(pendingRedeemIdx === idx && !document.getElementById('redeemModal').classList.contains('hidden')) return;
+  pendingRedeemIdx = idx;
+  const item = SHOP[idx];
+  document.getElementById('rmIcon').textContent = item.emoji;
+  document.getElementById('rmTitle').textContent = item.name;
+  document.getElementById('rmInfo').textContent = item.rule;
+  document.getElementById('rmPts').textContent = item.pts + ' 积分';
+  document.getElementById('redeemModal').classList.remove('hidden');
+}
+
+function closeRedeem() {
+  document.getElementById('redeemModal').classList.add('hidden');
+  pendingRedeemIdx = -1;
+}
+
+function confirmRedeem() {
+  if(pendingRedeemIdx<0) return;
+  const records = loadRecords();
+  const redeems = loadRedeems();
+  const earned = Object.values(records).reduce((s,r)=>s+r.score,0);
+  const spent = redeems.reduce((s,r)=>s+r.pts,0);
+  const total = Math.max(0, earned - spent);
+  const item = SHOP[pendingRedeemIdx];
+
+  if(total < item.pts) {
+    showToast('积分不足，无法兑换');
+    closeRedeem();
+    return;
+  }
+
+  redeems.push({ date: todayStr(), name: item.name, pts: item.pts, idx: pendingRedeemIdx });
+  saveRedeems(redeems);
+  closeRedeem();
+  showToast(`✅ 已兑换「${item.name}」`);
+  renderAll();
+}
+
+// ========== 打卡交互 ==========
 function goToday() {
   currentDate = todayStr();
   checked = {};
@@ -419,7 +623,6 @@ function goToday() {
 document.getElementById('datePicker').addEventListener('change', function() {
   currentDate = this.value;
   checked = {};
-  // 加载已有记录到 checked
   const records = loadRecords();
   const rec = records[currentDate];
   if(rec) { checked = {...(rec.done||{})}; }
@@ -427,6 +630,7 @@ document.getElementById('datePicker').addEventListener('change', function() {
 });
 
 function submitToday() {
+  if(!isAdmin()) { showToast('🔒 请先解锁再提交'); return; }
   const score = TASKS.reduce((s,t)=>s+(checked[t.id]?t.pts:0), 0);
   const records = loadRecords();
   records[currentDate] = { score, done: {...checked} };
@@ -436,6 +640,7 @@ function submitToday() {
 }
 
 function editToday() {
+  if(!isAdmin()) return;
   const records = loadRecords();
   const rec = records[currentDate];
   if(rec) checked = {...(rec.done||{})};
@@ -457,8 +662,10 @@ function showToast(msg) {
 }
 
 function confirmReset() {
-  if(confirm('确定要清除全部打卡数据吗？此操作不可恢复。')) {
+  if(!isAdmin()) return;
+  if(confirm('确定要清除全部打卡数据和兑换记录吗？此操作不可恢复。')) {
     localStorage.removeItem(KEY_RECORDS);
+    localStorage.removeItem(KEY_REDEEM);
     checked = {};
     renderAll();
     showToast('已清除全部数据');
@@ -467,6 +674,7 @@ function confirmReset() {
 
 // ========== 初始化 ==========
 document.getElementById('datePicker').value = currentDate;
+updateModeUI();
 renderAll();
 </script>
 </body>
